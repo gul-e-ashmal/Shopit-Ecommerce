@@ -1,0 +1,11 @@
+Proxy error: Could not proxy request /api/v1/products?page=1&keyword= from localhost:3001 to https://localhost:3000/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (EPROTO).
+
+
+"proxy": {
+    "/api": {
+      "target": "https://localhost:3000/",
+      "secure": false
+    }
+  }
+
