@@ -1,4 +1,4 @@
-const { getAllProduct, newProduct, singleProduct, updateProduct, deleteProduct, createReview, getProductReview, deleteReview } = require("../controllers/productcontroller");
+const { getAllProduct, newProduct, singleProduct, updateProduct, deleteProduct, createReview, getProductReview, deleteReview, canReview, getProducts, uploadProductImages, deleteProductImages } = require("../controllers/productcontroller");
 
 const express = require("express");
 const AuthUser = require("../middlerware/AuthUser");
@@ -7,15 +7,22 @@ const AuthorizeRole = require("../middlerware/AuthorizeRole");
 const router = express.Router();
 
 router.get("/products", getAllProduct);
-router.post("/admin/products", AuthUser,AuthorizeRole('admin'), newProduct);
+router.post("/admin/products", AuthUser, AuthorizeRole('admin'), newProduct);
 router.get("/products/:id", singleProduct);
-router.delete("/admin/products/:id", AuthUser,AuthorizeRole('admin'), deleteProduct);
-router.put("/admin/products/:id", AuthUser,AuthorizeRole('admin'), updateProduct);
+// get products for admin
+router.get("/admin/products", AuthUser, AuthorizeRole('admin'), getProducts);
+// admin/products/:id/delete_images
+router.put("/admin/products/:id/upload_images", AuthUser, AuthorizeRole('admin'), uploadProductImages)
+router.delete("/admin/products/:id/delete_images", AuthUser, AuthorizeRole('admin'), deleteProductImages)
+// update and deleted product
+router.delete("/admin/products/:id", AuthUser, AuthorizeRole('admin'), deleteProduct);
+router.put("/admin/products/:id", AuthUser, AuthorizeRole('admin'), updateProduct);
 
 // review routes
-router.post("/review", AuthUser, createReview)
-router.get("/review", AuthUser, getProductReview)
+router.put("/review", AuthUser, createReview)
+router.get("/can_review", AuthUser, canReview)
 
-router.delete("/admin/review", AuthUser, AuthorizeRole('admin'), deleteReview)
+router.get("/admin/reviews", AuthUser, AuthorizeRole('admin'), getProductReview)
+router.delete("/admin/reviews", AuthUser, AuthorizeRole('admin'), deleteReview)
 
 module.exports = router

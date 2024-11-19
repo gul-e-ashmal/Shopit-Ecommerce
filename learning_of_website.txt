@@ -1,0 +1,13 @@
+// About reset password and forget password
+Only for unauthorize users
+click on forget password --> page to add email --> mail sent to that email --> link wensite page in that mail 
+-->enter new and old passowrd --> reste password
+tool: mailTrap(application), nodemailer(package)
+SMTP protocol is used
+you can do deep search about how nodemail,smtp and mailTrap work 
+
+//Cart functionality
+Product detail page --> click add to cart(quantity of single item in cart depends on stock of that item) 
+--> handle cartSlice (addItem, deleteItem,getItem)
+
+//stripe functionality and how does stripe work

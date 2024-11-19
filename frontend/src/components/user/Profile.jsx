@@ -1,29 +1,37 @@
 import React from 'react'
+import UserLayout from '../layouts/UserLayout'
+import { useSelector } from 'react-redux'
 
 const Profile = () => {
+
+  const {user}=useSelector((state)=> state.auth)
+  
   return (
-    <div class="row justify-content-around mt-5 user-info">
-    <div class="col-12 col-md-3">
-      <figure class="avatar avatar-profile">
-        <img
-          class="rounded-circle img-fluid"
-          src="../images/default_avatar.jpg"
-          alt=""
-        />
-      </figure>
-    </div>
+    <UserLayout >
+      <div class="row justify-content-around mt-5 user-info">
 
-    <div class="col-12 col-md-5">
-      <h4>Full Name</h4>
-      <p>John Doe</p>
+        <div class="col-12 col-md-3">
+          <figure class="avatar avatar-profile">
+            <img
+              class="rounded-circle img-fluid"
+              src={user?.avatar ? user?.avatar.url :"../images/default_avatar.jpg"}
+              alt=""
+            />
+          </figure>
+        </div>
 
-      <h4>Email Address</h4>
-      <p>johndoe@example.com</p>
+        <div class="col-12 col-md-5">
+          <h4>Full Name</h4>
+          <p>{user?.name}</p>
 
-      <h4>Joined On</h4>
-      <p>2023-09-19</p>
-    </div>
-  </div>
+          <h4>Email Address</h4>
+          <p>{user?.email}</p>
+
+          <h4>Joined On</h4>
+          <p>{user?.createdAt.toString().substring(0, 10)}</p>
+        </div>
+      </div>
+    </UserLayout>
   )
 }
 

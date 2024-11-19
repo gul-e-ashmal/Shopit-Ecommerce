@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLoginMutation } from '../../reudx/API/authApi';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
 
@@ -72,7 +72,7 @@ const Login = () => {
                         />
                     </div>
 
-                    <a href="/password/forgot" className="float-end mb-4">Forgot Password?</a>
+                    <Link to={"/password/forget"} className="float-end mb-4">Forgot Password?</Link>
 
                     <button id="login_button" type="submit" className="btn w-100 py-2" disabled={isLoading}>
                         {isLoading ? " Loading..." : "LOGIN"}

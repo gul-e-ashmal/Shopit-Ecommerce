@@ -2,8 +2,10 @@ const CatchAsyncAwait = require("../middlerware/CatchAsyncAwait");
 const User = require("../models/usermodel");
 const ErrorHandler = require("../utils/ErrorHandler");
 const jwtToken = require("../utils/JWTToken");
-const { default: sendMail } = require("../utils/sendMail");
-const crypto=require("crypto")
+const sendMail = require("../utils/sendMail");
+const crypto = require("crypto")
+
+const { upload_file, delete_file } = require("../utils/CloudinarySetup")
 
 // api/v1/register
 const register = CatchAsyncAwait(async (req, res, next) => {
@@ -81,6 +83,20 @@ const updateUserPassword = CatchAsyncAwait(async (req, res, next) => {
 
 })
 
+// ---/api/v1/me/updateAvatar
+const updateAvatar = CatchAsyncAwait(async (req, res, next) => {
+
+    const avatarResponse = await upload_file(req.body.avatar, "shopit/avatar");
+    const product = await User.findByIdAndUpdate(req?.user?._id, {
+        avatar: avatarResponse
+    })
+
+    res.status(200).json({
+        success: true
+    })
+
+})
+
 //---/api/v1/updateProfile
 const updateUserProfile = CatchAsyncAwait(async (req, res, next) => {
 
@@ -148,7 +164,7 @@ const updateuser = CatchAsyncAwait(async (req, res, next) => {
 // api/v1/admin/user/:id
 const deleteuser = CatchAsyncAwait(async (req, res, next) => {
 
-    // let user = await User.findById(req.params.id);
+    let user = await User.findById(req.params.id);
 
     // if (!user) {
     //     return (new ErrorHandler("user not found"))
@@ -157,8 +173,11 @@ const deleteuser = CatchAsyncAwait(async (req, res, next) => {
     // remove cloudaniary
 
     // await user.remove();
+    if (user?.avatar?.public_id) {
+        await delete_file(user?.avatar?.public_id)
+    }
 
-    const user = await User.findByIdAndDelete(req.params.id);
+    user = await User.findByIdAndDelete(req.params.id);
 
     res.status(200).json({
         user,
@@ -171,18 +190,18 @@ const deleteuser = CatchAsyncAwait(async (req, res, next) => {
 // api/v1/password/forget
 const forgetPassword = CatchAsyncAwait(async (req, res, next) => {
 
-    let user = await User.findById(req.body.email);
+    let user = await User.findOne({ email: req.body.email });
 
     if (!user) {
-        return (new ErrorHandler("user not found"))
+        return next(new ErrorHandler("user not found"))
     }
 
-    const resetToken = user.getResetPasswordToken();
+    const resetToken = await user.getResetPasswordToken();
 
 
     await user.save();
 
-    const resetUrl = `http://127.0.0.1:3000/api/v1/password/forget/${resetToken}`;
+    const resetUrl = `http://127.0.0.1:3001/password/reset/${resetToken}`;
     const message = `your reset password url is this ${resetUrl} if you have not said please ignore this message`;
 
 
@@ -202,34 +221,40 @@ const forgetPassword = CatchAsyncAwait(async (req, res, next) => {
         user.resetPasswordExpire = undefined;
         user.resetPasswordToken = undefined;
         await user.save()
+
+        res.status(500).json({
+            success: false,
+            message: `Mail could not be send`
+        })
     }
 })
 
 // /password/reset/:token
 const resetPassword = CatchAsyncAwait(async (req, res, next) => {
 
+    console.log("heelo")
+    console.log(req.params.token, req.body.password, req.body.confirmPassword);
+
     const resetPasswordToken = await crypto.createHash('sha256').update(req.params.token).digest('hex');
 
-    const user=await User.findOne({resetPasswordToken,resetPasswordExpire:{$gt:Date.now()}});
+    const user = await User.findOne({ resetPasswordToken, resetPasswordExpire: { $gt: Date.now() } });
 
-
-    if(!user){
-        return next(new ErrorHandler("Password reset token is invalid or has been expired",500))
+    if (!user) {
+        return next(new ErrorHandler("Password reset token is invalid or has been expired", 500))
+    }
+    if (req.body.password !== req.body.confirmPassword) {
+        return (new ErrorHandler("Password not match", 500))
     }
 
-    if (req.body.password !== req.body.confirmPassword){
-        return (new ErrorHandler("Password not match",500))
-    }
-
-    user.password=req.body.password;
-    this.resetPasswordExpire=undefined;
-    this.resetPasswordToken=undefined;
+    user.password = req.body.password;
+    this.resetPasswordExpire = undefined;
+    this.resetPasswordToken = undefined;
 
     await user.save();
 
-    sendToken(user,200,res);
+    jwtToken(user, 200, res);
 })
 
 
 
-module.exports = { register, login, logout, getUserDetailInfo, updateUserProfile, updateUserPassword, deleteuser, updateuser, getAllUsers, getSingleUser, forgetPassword ,resetPassword}
+module.exports = { register, login, logout, getUserDetailInfo, updateUserProfile, updateUserPassword, deleteuser, updateuser, getAllUsers, getSingleUser, forgetPassword, resetPassword, updateAvatar }

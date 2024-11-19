@@ -15,6 +15,7 @@ const AuthUser = CatchAsyncAwait(async (req, res, next) => {
     const decoded = jwt.verify(token, 'secret');
     req.user = await User.findById(decoded.id);
 
+
     next();
 })
 

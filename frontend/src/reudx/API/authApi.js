@@ -44,12 +44,29 @@ export const authApi = createApi({
                 }
             }
         }),
-        logout:builder.query({
-            query:()=>"/logout",
+        logout: builder.query({
+            query: () => "/logout",
+        }),
+        forgetPassword: builder.mutation({
+            query(body) {
+                return {
+                    url: "/password/forget",
+                    method: "POST",
+                    body
+                }
+            },
+        }),
+        resetPassword: builder.mutation({
+            query(body) {
+                console.log(body)
+                return {
+                    url: `/password/reset/${body.token}`,
+                    method: "PUT",
+                    body: { password: body.password, confirmPassword: body.confirmPassword }
+                }
+            }
         })
-
     }),
-
 })
 
-export const { useLoginMutation, useRegisterMutation,useLazyLogoutQuery } = authApi
+export const { useLoginMutation, useRegisterMutation, useLazyLogoutQuery, useForgetPasswordMutation, useResetPasswordMutation } = authApi

@@ -12,6 +12,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.cart);
   const [logout, { data }] = useLazyLogoutQuery();
 
   const logoutHandle = async () => {
@@ -25,8 +26,12 @@ const Header = () => {
       <nav className=' nav navbar container d-flex justify-content-between'>
         <div className=' logo'></div>
         <Search />
-        <div className=' cartInfo'></div>
-        <div className=' userInfo'></div>
+        <div className=' cartInfo col-12 col-md-3 mt-4 mt-md-0 text-center'>
+          <a href="/cart" className='col-12 col-md-3 mt-4 mt-md-0 text-center'>
+            <span id="cart" class="ms-3"> Cart </span>
+            <span class="ms-1" id="cart_count">{cartItems.length}</span>
+          </a>
+        </div>
 
         <div className=' userInfo'>
           {
@@ -36,9 +41,11 @@ const Header = () => {
                 <p className='dropdown-toggle p-1'>{user?.name}</p>
               </button>
               <ul className=' dropdown-menu p-2'>
-               <li> <Link className=' dropdown-list text-decoration-none text-dark'>Dashboard </Link></li>
-               <li><Link  to={`/me/profile`} className=' dropdown-list text-decoration-none text-dark'>Profile </Link></li> 
-                <li><Link className=' dropdown-list text-decoration-none text-dark'>Orders </Link></li>
+                {
+                  user.role == "admin" && <li> <Link to={`/admin/dashboard`} className=' dropdown-list text-decoration-none text-dark'>Dashboard </Link></li>
+                }
+                <li><Link to={`/me/profile`} className=' dropdown-list text-decoration-none text-dark'>Profile </Link></li>
+                <li><Link to={`/me/orders`} className=' dropdown-list text-decoration-none text-dark'>Orders </Link></li>
                 <Link onClick={logoutHandle} className=' dropdown-list text-danger'>
                   {/* <Link  > */}
                   Logout

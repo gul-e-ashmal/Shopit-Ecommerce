@@ -1,4 +1,4 @@
-const { login, register, getUserDetailInfo, updateUserProfile, updateUserPassword, getAllUsers, getSingleUser, deleteuser, updateuser, forgetPassword, resetPassword, logout } = require("../controllers/authcontroller");
+const { login, register, getUserDetailInfo, updateUserProfile, updateUserPassword, getAllUsers, getSingleUser, deleteuser, updateuser, forgetPassword, resetPassword, logout, updateAvatar } = require("../controllers/authcontroller");
 
 const express = require("express");
 const AuthUser = require("../middlerware/AuthUser");
@@ -13,13 +13,14 @@ router.get("/logout",logout);
 
 router.get("/me", AuthUser, getUserDetailInfo);
 router.put("/updatePassword", AuthUser, updateUserPassword);
-router.put("/updateProfile", AuthUser, updateUserProfile);
+router.put("/me/update", AuthUser, updateUserProfile);
+router.put("/me/updateAvatar", AuthUser, updateAvatar);
 
 router.get("/admin/users", AuthUser,AuthorizeRole("admin"), getAllUsers)
 router.route("/admin/users/:id").get(AuthUser, AuthorizeRole("admin"), getSingleUser)
     .put(AuthUser, AuthorizeRole("admin"), updateuser).delete(AuthUser, AuthorizeRole("admin"), deleteuser)
 
-router.post('/password/forget',AuthUser,forgetPassword);
+router.post('/password/forget',forgetPassword);
 router.put('/password/reset/:token',resetPassword)
 
 

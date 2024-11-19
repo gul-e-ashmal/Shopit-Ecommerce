@@ -26,7 +26,7 @@ const orderSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'User'
+        ref: 'user'
     },
     orderItems: [
         {
@@ -40,16 +40,16 @@ const orderSchema = mongoose.Schema({
             },
             image: {
                 type: String,
-                required: true
+                // required: true
             },
             price: {
                 type: Number,
                 required: true
             },
-            product: {
+            id: {
                 type: mongoose.Schema.Types.ObjectId,
                 required: true,
-                ref: 'Product'
+                ref: 'product'
             }
         }
     ],

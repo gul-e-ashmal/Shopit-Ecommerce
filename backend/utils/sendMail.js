@@ -2,24 +2,41 @@ const nodemailer = require("nodemailer");
 
 const sendMail = async (options) => {
 
+   
+
     const transport = nodemailer.createTransport({
 
-        host: `${process.env.SMTP_HOST}`,
-        port: `${process.env.SMTP_PORT}`,
+        host: ``,
+        port: 2525,
 
         auth: {
-
-            user: `${process.env.SMTP_EMAIL}`,
-
-            pass: `${process.env.SMTP_PASSWORD}`
-
+            user: ``,
+            pass: ``
         }
 
     })
 
+    // var transport = nodemailer.createTransport({
+
+    //     host: "sandbox.smtp.mailtrap.io",
+
+    //     port: 2525,
+
+    //     auth: {
+
+    //         user: "f5bc2c1f06120c",
+
+    //         pass: "********d494"
+
+    //     }
+
+    // });
+
+    console.log("hello")
+
     const messages = {
-        from: `${process.env.SMTP_EMAIL_FROM}`,
-        to: options.email,
+        from: "noreply@shopit.com",
+        to: options.to,
         subject: options.subject,
         html: options.message,
 
@@ -29,4 +46,4 @@ const sendMail = async (options) => {
 
 }
 
-module.exports=sendMail
+module.exports = sendMail
