@@ -4,13 +4,13 @@ const Stripe = require("stripe");
 const Order = require("../models/ordermodel");
 require('dotenv').config();
 
-const stripe = Stripe("sk_test_51QFAErGdttMuO0VcEy6J7jjXSf77JruQjXjR52KEg0MzfAVtgfua94UXTLjEiLuyEtUc7IQdb5FSxpbgbCZ7PxnJ00Vt")
+const stripe = Stripe("")
 
 const stripeCheckoutSession = CatchAsyncAwait(async (req, res) => {
 
     const body = req?.body;
 
-    const shipping_rate = body?.itemsPrice > 200 ? "shr_1QFIV3GdttMuO0Vc1rEJBLu2" : "shr_1QFIWCGdttMuO0VcnMFzi9jF";
+    const shipping_rate = body?.itemsPrice > 200 ? "" : "";
     const line_items = body?.orderItem?.map((item) => {
         return {
             price_data: {
@@ -21,7 +21,7 @@ const stripeCheckoutSession = CatchAsyncAwait(async (req, res) => {
                 },
                 unit_amount: item.price * 100
             },
-            tax_rates: ["txr_1QFIpRGdttMuO0VcZPQbqldV"],
+            tax_rates: [""],
             quantity: item?.quantity
         }
     })
@@ -97,7 +97,7 @@ const getOrderItems = async (line_items) => {
 const stripeWebhook = CatchAsyncAwait(async (req, res) => {
     try {
         const signature = req.headers["stripe-signature"];
-        const event = stripe.webhooks.constructEvent(req.rawBody, signature, `whsec_e1fc634dd749683a770005c347aca8b27d7e20bd4cf7d219874238fc59`);
+        const event = stripe.webhooks.constructEvent(req.rawBody, signature, ``);
 
         if (event.type === "checkout.session.completed") {
             const session = event.data.object;
