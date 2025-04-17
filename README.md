@@ -1,1 +1,1 @@
-This is an e-commerce store. That I made by taking full stack web engineer government course(nitsep).
+This is an e-commerce store. Developed with hands-on experience in Redux Toolkit, backend structure, error handling, and frontend file organization. Idea is from nitsep's(Pakistan government Institute) course.
